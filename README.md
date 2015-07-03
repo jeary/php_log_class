@@ -61,9 +61,9 @@ $config = array(
 `level`:日志的等级。
 根据代码中的：
 ```
-	protected $_levels = array('FATAL' => 1, 'NOTICE' => 3, 'RPC' => 4, 'TRACE' => 5, 'SYS' => 6, 'ALL' => 7);
+protected $_levels = array('FATAL' => 1, 'NOTICE' => 3, 'RPC' => 3, 'WARNING' => 4, 'TRACE' => 5, 'SYS' => 6, 'ALL' => 7);
 ```
-来配置日志的等级，如果配置的是`4`，那么系统只会记录等级小于等于`4`的日志，这里就是`FATAL`,`NOTICE`,`RPC`
+来配置日志的等级，如果配置的是`3`，那么系统只会记录等级小于等于`4`的日志，这里就是`FATAL`,`NOTICE`,`RPC`
 
 `path`:根据这个配置，可以强制将不同等级的日志记录到不同的目录中。
 
@@ -108,15 +108,15 @@ $config = array(
 ======path========
 /data/logs/sys/sys.log.2015-07-03
 =====content======
-{"level":"TRACE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"sys","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/LIB_Log.php","line":94,"function":"writetrace","class":"LIB_Log"}
+{"level":"TRACE","logid":2314863631,"timestamp":1435895140,"date":"2015-07-03 11:45:40","product":"uc","module":"sys","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/LIB_Log.php","line":94,"function":"writetrace","class":"LIB_Log"}
 ======path========
 /data/logs/sys/sys.log.2015-07-03
 =====content======
-{"level":"TRACE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"sys","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/log.php","line":10,"function":"write","class":"LIB_Log"}
+{"level":"TRACE","logid":2314863631,"timestamp":1435895140,"date":"2015-07-03 11:45:40","product":"uc","module":"sys","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/log.php","line":10,"function":"write","class":"LIB_Log"}
 ======path========
 /data/logs/sys/sys.log.2015-07-03
 =====content======
-{"level":"NOTICE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"sys","cookie":[],"method":"","uri":"","caller_ip":"","host_ip":"","key":"value","time":0.6}
+{"level":"NOTICE","logid":2314863631,"timestamp":1435895140,"date":"2015-07-03 11:45:40","product":"uc","module":"sys","cookie":[],"method":"","uri":"","caller_ip":"","host_ip":"","key":"value","time":0.4}
 -------------------test write notice   end-----------------------
 
 
@@ -127,15 +127,15 @@ $config = array(
 ======path========
 /data/logs/app/app.log.2015-07-03
 =====content======
-{"level":"TRACE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"app","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/LIB_Log.php","line":94,"function":"writetrace","class":"LIB_Log"}
+{"level":"TRACE","logid":2314863631,"timestamp":1435895140,"date":"2015-07-03 11:45:40","product":"uc","module":"app","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/LIB_Log.php","line":94,"function":"writetrace","class":"LIB_Log"}
 ======path========
 /data/logs/app/app.log.2015-07-03
 =====content======
-{"level":"TRACE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"app","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/log.php","line":16,"function":"write","class":"LIB_Log"}
+{"level":"TRACE","logid":2314863631,"timestamp":1435895140,"date":"2015-07-03 11:45:40","product":"uc","module":"app","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/log.php","line":16,"function":"write","class":"LIB_Log"}
 ======path========
 /data/logs/app/app.log.2015-07-03
 =====content======
-{"level":"NOTICE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"app","cookie":[],"method":"","uri":"","caller_ip":"","host_ip":"","key":"value","time":0.9}
+{"level":"NOTICE","logid":2314863631,"timestamp":1435895140,"date":"2015-07-03 11:45:40","product":"uc","module":"app","cookie":[],"method":"","uri":"","caller_ip":"","host_ip":"","key":"value","time":11.7}
 -------------------test write notice  write app  end-----------------------
 
 
@@ -146,8 +146,19 @@ $config = array(
 ======path========
 /data/logs/rpc/rpc.log.2015-07-03
 =====content======
-{"level":"RPC","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"sys","rpc_params":"rpc_value","time":0}
+{"level":"RPC","logid":2314863631,"timestamp":1435895140,"date":"2015-07-03 11:45:40","product":"uc","module":"sys","rpc_params":"rpc_value","time":0}
 -------------------test write rpc  end-----------------------
+
+
+
+
+
+-------------------test write warning start-----------------------
+======path========
+/data/logs/sys/sys.wf.log.2015-07-03
+=====content======
+{"level":"WARNING","logid":2314863631,"timestamp":1435895140,"date":"2015-07-03 11:45:40","product":"uc","module":"sys","warning_params":"warning_value"}
+-------------------test write warning  end-----------------------
 
 
 ```
