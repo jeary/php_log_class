@@ -3,7 +3,9 @@ php的日志处理类
 
 # 文件说明
 LIB_Log.php   文件是日志处理类的代码文件
+
 log_config.php  文件是它的配置文件
+
 log.php   是测试文件
 
 # 功能说明
