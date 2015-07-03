@@ -39,7 +39,7 @@ class LIB_Log {
 	 * 日志等级
 	 * @var array
 	 */
-	protected $_levels = array('FATAL' => 1, 'ERROR' => 2, 'NOTICE' => 3, 'RPC' => 4, 'TRACE' => 5, 'SYS' => 6, 'ALL' => 7);
+	protected $_levels = array('FATAL' => 1, 'NOTICE' => 3, 'RPC' => 3, 'WARNING' => 4, 'TRACE' => 5, 'SYS' => 6, 'ALL' => 7);
 	/**
 	 * Format of timestamp for log files
 	 *
@@ -163,6 +163,22 @@ class LIB_Log {
 		$this->_mark('rpcStart');
 	}
 	/**
+	 * 写warning日志处理类
+	 * @param  [type] $app [模块名称]
+	 * @author wangyunji
+	 * @date   2015-06-02
+	 */
+
+	public function writewarning($data) {
+		$app     = !empty($app) ? $app : (defined('APP') ? APP : 'sys');
+		$message = $this->_elements($this->_log_base, $this->initnotice());
+		$message = array_merge($message, $data);
+
+		$message['module'] = $app;
+
+		$res = $this->_write_file('WARNING', $message, $app);
+	}
+	/**
 	 * 功能异常时候记录trace
 	 * @return [type] [description]
 	 * @author wangyunji
@@ -248,6 +264,7 @@ class LIB_Log {
 		$this->_noticelog['date']      = date($this->_date_fmt, $this->_noticelog['timestamp']);
 		$this->_noticelog['product']   = isset($this->_config['product']) ? $this->_config['product'] : 'unknow';
 		$this->_noticelog['module']    = '';
+		$this->_noticelog['error']     = '';
 		$this->_noticelog['cookie']    = isset($_COOKIE) ? $_COOKIE : '';
 		$this->_noticelog['method']    = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
 		$this->_noticelog['uri']       = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
@@ -281,6 +298,7 @@ class LIB_Log {
 	 * @param  [string] $level [日志的等级]
 	 * @param  [array] $msg [日志内容]
 	 * @param  string $app [日志的子路径]
+	 * @param  string $subffix [日志文件后缀]
 	 * @return [type] [FALSE:写日志失败；TRUE:写日志成功]
 	 * @author wangyunji
 	 * @date   2015-07-03
@@ -295,7 +313,9 @@ class LIB_Log {
 		}
 		$msg = array_merge(array('level' => $level), $msg);
 		file_exists($this->_log_path . $app) or mkdir($this->_log_path . $app, 0755, true);
-		$filepath = !isset($this->_config['path'][$level]) ? $this->_log_path . $app . '/' . $app . '.log.' . date('Y-m-d') : $this->_log_path . $this->_config['path'][$level] . date('Y-m-d');
+		$subffix  = isset($this->_config['subffix'][$level]) ? $this->_config['subffix'][$level] : '';
+		$app_path = $this->_log_path . $app . '/' . $app . $subffix . '.log.' . date('Y-m-d');
+		$filepath = !isset($this->_config['path'][$level]) ? $app_path : $this->_log_path . $this->_config['path'][$level] . date('Y-m-d');
 		if (TRUE === $this->debug) {
 			echo '======path========' . "\n";
 			echo $filepath . "\n";
