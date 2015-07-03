@@ -3,10 +3,13 @@
 $config = array(
 	'log_path' => '/data/logs/',
 	'product'  => 'uc',
-	'level'    => 4,
+	'level'    => 3,
 	'path'     => array(
 		'FATAL' => 'php/php.log.',
 		'RPC'   => 'rpc/rpc.log.',
 		'SYS'   => 'cisys/sys.log.',
+	),
+	'subffix'  => array(
+		'WARNING' => '.wf',
 	),
 );
