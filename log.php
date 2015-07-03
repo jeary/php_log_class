@@ -22,3 +22,9 @@ $logSrv->rpcstart();
 $logSrv->writerpc(array('rpc_params' => 'rpc_value'));
 
 echo "-------------------test write rpc  end-----------------------\n\n\n";
+
+echo "\n\n\n-------------------test write warning start-----------------------\n";
+$logSrv->rpcstart();
+$logSrv->writewarning(array('warning_params' => 'warning_value'));
+
+echo "-------------------test write warning  end-----------------------\n\n\n";
