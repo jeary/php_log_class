@@ -264,7 +264,7 @@ class LIB_Log {
 		$this->_noticelog['date']      = date($this->_date_fmt, $this->_noticelog['timestamp']);
 		$this->_noticelog['product']   = isset($this->_config['product']) ? $this->_config['product'] : 'unknow';
 		$this->_noticelog['module']    = '';
-		$this->_noticelog['error']     = '';
+		$this->_noticelog['errno']     = 0;
 		$this->_noticelog['cookie']    = isset($_COOKIE) ? $_COOKIE : '';
 		$this->_noticelog['method']    = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
 		$this->_noticelog['uri']       = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
