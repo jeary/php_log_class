@@ -38,5 +38,129 @@ $logSrv->rpcstart();//rpc调用的起始时间记录
 $logSrv->writerpc(array('rpc_params' => 'rpc_value'));
 ```
 
+# 配置文件说明
+配置文件说明
+```
+$config = array(
+	'log_path' => '/data/logs/',
+	'product'  => 'uc',
+	'level'    => 4,
+	'path'     => array(
+		'FATAL' => 'php/php.log.',
+		'RPC'   => 'rpc/rpc.log.',
+		'SYS'   => 'cisys/sys.log.',
+	),
+);
+```
+说明：
+
+`log_path`:日志的根目录配置，日志将会全部记录在这个目录下，日志可能会根据模块名称不同或者日志等级不同而被记录到不同的子目录下。
+
+`product`:系统名称uc代表`user center`
+
+`level`:日志的等级。
+根据代码中的：
+```
+	protected $_levels = array('FATAL' => 1, 'NOTICE' => 3, 'RPC' => 4, 'TRACE' => 5, 'SYS' => 6, 'ALL' => 7);
+```
+来配置日志的等级，如果配置的是`4`，那么系统只会记录等级小于等于`4`的日志，这里就是`FATAL`,`NOTICE`,`RPC`
+
+`path`:根据这个配置，可以强制将不同等级的日志记录到不同的目录中。
+
+# 测试结果
+当level配置为`4`时：
+```
+-------------------test write notice start-----------------------
+======path========
+/data/logs/sys/sys.log.2015-07-03
+=====content======
+{"level":"NOTICE","logid":2156165134,"timestamp":1435893553,"date":"2015-07-03 11:19:13","product":"uc","module":"sys","cookie":[],"method":"","uri":"","caller_ip":"","host_ip":"","key":"value","time":0.3}
+-------------------test write notice   end-----------------------
+
+
+
+
+
+-------------------test write notice write app start-----------------------
+======path========
+/data/logs/app/app.log.2015-07-03
+=====content======
+{"level":"NOTICE","logid":2156165134,"timestamp":1435893553,"date":"2015-07-03 11:19:13","product":"uc","module":"app","cookie":[],"method":"","uri":"","caller_ip":"","host_ip":"","key":"value","time":1.3}
+-------------------test write notice  write app  end-----------------------
+
+
+
+
+
+-------------------test write rpc start-----------------------
+======path========
+/data/logs/rpc/rpc.log.2015-07-03
+=====content======
+{"level":"RPC","logid":2156165134,"timestamp":1435893553,"date":"2015-07-03 11:19:13","product":"uc","module":"sys","rpc_params":"rpc_value","time":0}
+-------------------test write rpc  end-----------------------
+
+```
+
+当level配置为`7`时：
+```
+
+-------------------test write notice start-----------------------
+======path========
+/data/logs/sys/sys.log.2015-07-03
+=====content======
+{"level":"TRACE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"sys","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/LIB_Log.php","line":94,"function":"writetrace","class":"LIB_Log"}
+======path========
+/data/logs/sys/sys.log.2015-07-03
+=====content======
+{"level":"TRACE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"sys","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/log.php","line":10,"function":"write","class":"LIB_Log"}
+======path========
+/data/logs/sys/sys.log.2015-07-03
+=====content======
+{"level":"NOTICE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"sys","cookie":[],"method":"","uri":"","caller_ip":"","host_ip":"","key":"value","time":0.6}
+-------------------test write notice   end-----------------------
+
+
+
+
+
+-------------------test write notice write app start-----------------------
+======path========
+/data/logs/app/app.log.2015-07-03
+=====content======
+{"level":"TRACE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"app","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/LIB_Log.php","line":94,"function":"writetrace","class":"LIB_Log"}
+======path========
+/data/logs/app/app.log.2015-07-03
+=====content======
+{"level":"TRACE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"app","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/log.php","line":16,"function":"write","class":"LIB_Log"}
+======path========
+/data/logs/app/app.log.2015-07-03
+=====content======
+{"level":"NOTICE","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"app","cookie":[],"method":"","uri":"","caller_ip":"","host_ip":"","key":"value","time":0.9}
+-------------------test write notice  write app  end-----------------------
+
+
+
+
+
+-------------------test write rpc start-----------------------
+======path========
+/data/logs/rpc/rpc.log.2015-07-03
+=====content======
+{"level":"RPC","logid":2164804635,"timestamp":1435893639,"date":"2015-07-03 11:20:39","product":"uc","module":"sys","rpc_params":"rpc_value","time":0}
+-------------------test write rpc  end-----------------------
+
+
+```
+
+fatal 日志demo：
+
+```
+======path========
+/data/logs/php/php.log.2015-07-03
+=====content======
+{"level":"FATAL","logid":3999749131,"timestamp":1435890514,"date":"2015-07-03 10:28:34","product":"uc","module":"","error":{"type":2,"message":"Missing argument 2 for LIB_Log::writerpc(), called in \/Users\/wangyunji\/phpui\/phplib\/rdtest\/log.php on line 22 and defined","file":"\/Users\/wangyunji\/phpui\/phplib\/rdtest\/LIB_Log.php","line":145}}
+```
+
+
 
 
