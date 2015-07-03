@@ -41,14 +41,18 @@ $logSrv->writerpc(array('rpc_params' => 'rpc_value'));
 # 配置文件说明
 配置文件说明
 ```
+//日志配置
 $config = array(
 	'log_path' => '/data/logs/',
 	'product'  => 'uc',
-	'level'    => 4,
+	'level'    => 3,
 	'path'     => array(
 		'FATAL' => 'php/php.log.',
 		'RPC'   => 'rpc/rpc.log.',
 		'SYS'   => 'cisys/sys.log.',
+	),
+	'subffix'  => array(
+		'WARNING' => '.wf',
 	),
 );
 ```
@@ -66,6 +70,8 @@ protected $_levels = array('FATAL' => 1, 'NOTICE' => 3, 'RPC' => 3, 'WARNING' =>
 来配置日志的等级，如果配置的是`3`，那么系统只会记录等级小于等于`4`的日志，这里就是`FATAL`,`NOTICE`,`RPC`
 
 `path`:根据这个配置，可以强制将不同等级的日志记录到不同的目录中。
+
+`subffix`:根据这个配置，可以强制将不同等级的日志记录到带有后缀的文件中。
 
 # 测试结果
 当level配置为`4`时：
