@@ -25,19 +25,18 @@ SYS日志：对CI框架起作用，如果使用的是CI框架，用这个日志�
 记录NOTICE日志：
 ```
 $app = 'login';//模块名称,控制日志的子目录 同时这个参数还支持`defind('APP','login');`方式来支持
-
 $logSrv = new LIB_Log();//日志类初始化
-
 $logSrv->addlog('key', 'value');//添加NOTICE日志
-
 $logSrv->write($app);
 ```
 记录RPC日志：
+```
 $logSrv = new LIB_Log();//日志类初始化
 
 $logSrv->rpcstart();//rpc调用的起始时间记录
 
 $logSrv->writerpc(array('rpc_params' => 'rpc_value'));
+```
 
 
 
