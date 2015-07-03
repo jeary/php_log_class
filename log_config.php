@@ -5,9 +5,9 @@ $config = array(
 	'product'  => 'uc',
 	'level'    => 3,
 	'path'     => array(
-		'FATAL' => 'php/php.log.',
-		'RPC'   => 'rpc/rpc.log.',
-		'SYS'   => 'cisys/sys.log.',
+		'FATAL' => 'php/php',
+		'RPC'   => 'rpc/rpc',
+		'SYS'   => 'cisys/sys',
 	),
 	'subffix'  => array(
 		'WARNING' => '.wf',
