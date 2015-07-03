@@ -264,7 +264,7 @@ class LIB_Log {
 		$this->_noticelog['date']      = date($this->_date_fmt, $this->_noticelog['timestamp']);
 		$this->_noticelog['product']   = isset($this->_config['product']) ? $this->_config['product'] : 'unknow';
 		$this->_noticelog['module']    = '';
-		$this->_noticelog['errno']     = 0;
+		$this->_noticelog['errno']     = '';
 		$this->_noticelog['cookie']    = isset($_COOKIE) ? $_COOKIE : '';
 		$this->_noticelog['method']    = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
 		$this->_noticelog['uri']       = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
@@ -313,9 +313,9 @@ class LIB_Log {
 		}
 		$msg = array_merge(array('level' => $level), $msg);
 		file_exists($this->_log_path . $app) or mkdir($this->_log_path . $app, 0755, true);
-		$subffix  = isset($this->_config['subffix'][$level]) ? $this->_config['subffix'][$level] : '';
-		$app_path = $this->_log_path . $app . '/' . $app . $subffix . '.log.' . date('Y-m-d');
-		$filepath = !isset($this->_config['path'][$level]) ? $app_path : $this->_log_path . $this->_config['path'][$level] . date('Y-m-d');
+		$subffix  = isset($this->_config['subffix'][$level]) ? $this->_config['subffix'][$level] : '.log';
+		$app_path = $this->_log_path . $app . '/' . $app . '.' . date('Y-m-d') . $subffix;
+		$filepath = !isset($this->_config['path'][$level]) ? $app_path : $this->_log_path . $this->_config['path'][$level] . '.' . date('Y-m-d') . $subffix;
 		if (TRUE === $this->debug) {
 			echo '======path========' . "\n";
 			echo $filepath . "\n";
