@@ -75,12 +75,33 @@ class LIB_Log {
 		}
 		$this->_config = $config;
 		!$init or $this->initnotice();
+		set_error_handler(array($this, '_error_handler'));
 		register_shutdown_function(array($this, 'writefatal'));
+
 		$this->_log_path = ($config['log_path'] !== '') ? $config['log_path'] : APPPATH . 'logs/';
 		if (!is_dir($this->_log_path) or !$this->_is_really_writable($this->_log_path)) {
 			$this->_enabled = FALSE;
 		}
 		$this->_mark('srvStart');
+	}
+	/**
+	 * php普通错误捕获
+	 * @param  [type] $severity [错误类型]
+	 * @param  [type] $message [错误信息]
+	 * @param  [type] $filepath [报错的文件]
+	 * @param  [type] $line [报错的行]
+	 * @author wangyunji
+	 * @date   2015-07-03
+	 */
+
+	public function _error_handler($severity, $message, $filepath, $line) {
+		$warning = array(
+			'errno'  => $severity,
+			'errmsg' => $message,
+			'file'   => $filepath,
+			'line'   => $line,
+		);
+		$this->writewarning($warning);
 	}
 	/**
 	 * 写日志处理类
@@ -105,7 +126,8 @@ class LIB_Log {
 		if (error_get_last() && $this->_config['level'] >= $this->_levels['FATAL']) {
 			$message          = $this->_elements($this->_log_base, $this->initnotice());
 			$message['error'] = error_get_last();
-			$res              = $this->_write_file('FATAL', $message, $app);}
+			$res              = $this->_write_file('FATAL', $message, $app);
+		}
 	}
 	/**
 	 * 写notice日志
@@ -236,7 +258,11 @@ class LIB_Log {
 	 */
 
 	public function write_log($level, $msg) {
-		$level   = strtoupper($level);
+		$level = strtoupper($level);
+		if ('ERROR' === $level) {
+			$this->writefatal();
+			return intval(TRUE);
+		}
 		$message = array(
 			'syslevel' => $level,
 			'sysmsg'   => $msg,
@@ -316,6 +342,7 @@ class LIB_Log {
 		$subffix  = isset($this->_config['subffix'][$level]) ? $this->_config['subffix'][$level] : '.log';
 		$app_path = $this->_log_path . $app . '/' . $app . '.' . date('Y-m-d') . $subffix;
 		$filepath = !isset($this->_config['path'][$level]) ? $app_path : $this->_log_path . $this->_config['path'][$level] . '.' . date('Y-m-d') . $subffix;
+
 		if (TRUE === $this->debug) {
 			echo '======path========' . "\n";
 			echo $filepath . "\n";
