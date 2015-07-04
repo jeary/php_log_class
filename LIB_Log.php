@@ -76,7 +76,7 @@ class LIB_Log {
 		$this->_config = $config;
 		!$init or $this->initnotice();
 		set_error_handler(array($this, '_error_handler'));
-		register_shutdown_function(array($this, 'writefatal'));
+		defined('BASEPATH') or register_shutdown_function(array($this, 'writefatal'));
 
 		$this->_log_path = ($config['log_path'] !== '') ? $config['log_path'] : APPPATH . 'logs/';
 		if (!is_dir($this->_log_path) or !$this->_is_really_writable($this->_log_path)) {
@@ -127,6 +127,7 @@ class LIB_Log {
 			$message          = $this->_elements($this->_log_base, $this->initnotice());
 			$message['error'] = error_get_last();
 			$res              = $this->_write_file('FATAL', $message, $app);
+			$this->writetrace();
 		}
 	}
 	/**
@@ -208,15 +209,21 @@ class LIB_Log {
 	 */
 
 	public function writetrace($app) {
+		$app    = !empty($app) ? $app : (defined('APP') ? APP : 'sys');
 		$result = $this->_elements($this->_log_base, $this->initnotice());
 		$trace  = debug_backtrace();
 		$need   = array(
+			'type',
+			'class',
+			'function',
 			'file',
 			'line',
-			'function',
-			'class',
 		);
 		foreach ($trace as $key => $value) {
+			if (isset($value['object'])) {
+				$message['object_name'] = get_class($value['object']);
+				unset($value['object']);
+			}
 			$message = $this->_elements($need, $value);
 			$message = array_merge($result, $message);
 
@@ -310,7 +317,7 @@ class LIB_Log {
 	 * @date   2015-07-02
 	 */
 
-	private function _elements($items, $array, $default = NULL) {
+	private function _elements($items, $array, $default = '') {
 		$return = array();
 
 		is_array($items) OR $items = array($items);
