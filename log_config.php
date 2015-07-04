@@ -7,7 +7,7 @@ $config = array(
 	'path'     => array(
 		'FATAL' => 'php/php',
 		'RPC'   => 'rpc/rpc',
-		'SYS'   => 'cisys/sys',
+		'SYS'   => 'sys/sys',
 	),
 	'subffix'  => array(
 		'WARNING' => '.wf',
