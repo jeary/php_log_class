@@ -63,7 +63,7 @@ class LIB_Log {
 	 * @author wangyunji
 	 * @date   2015-05-13
 	 */
-	public function __construct($init = TRUE, $inputConfig = NULL) {
+	public function __construct($init = TRUE) {
 		if (defined('APPPATH') && defined('ENVIRONMENT') && file_exists($path = APPPATH . 'config/' . ENVIRONMENT . '/log.php')) {
 			include $path;
 		} elseif (defined('APPPATH') && file_exists($path = APPPATH . 'config/log.php')) {
