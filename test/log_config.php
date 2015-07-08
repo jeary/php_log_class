@@ -1,7 +1,7 @@
 <?php
 //日志配置
 $config = array(
-	'log_path' => '/data/logs/',
+	'log_path' => 'output/',
 	'product'  => 'uc',
 	'level'    => 3,
 	'path'     => array(
