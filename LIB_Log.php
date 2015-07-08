@@ -132,7 +132,6 @@ class LIB_Log {
 			$message['trace'] = $this->_gettrace($app);
 			$res              = $this->_write_file('FATAL', $message, $app, 'FATAL');
 		}
-		var_dump($message['trace']);
 	}
 	/**
 	 * 写notice日志
