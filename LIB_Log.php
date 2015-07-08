@@ -112,7 +112,6 @@ class LIB_Log {
 
 	public function write($app = '') {
 		$app = !empty($app) ? $app : (defined('APP') ? APP : 'sys');
-		$this->writetrace($app);
 		$this->writenotice($app);
 	}
 
@@ -121,14 +120,19 @@ class LIB_Log {
 	 * @author wangyunji
 	 * @date   2015-07-02
 	 */
-	public function writefatal() {
-		$app = !empty($app) ? $app : (defined('APP') ? APP : 'sys');
+	public function writefatal($msg = '') {
+		$app     = !empty($app) ? $app : (defined('APP') ? APP : 'sys');
+		$message = $this->_elements($this->_log_base, $this->initnotice());
 		if (error_get_last() && $this->_config['level'] >= $this->_levels['FATAL']) {
-			$message          = $this->_elements($this->_log_base, $this->initnotice());
 			$message['error'] = error_get_last();
-			$res              = $this->_write_file('FATAL', $message, $app);
-			$this->writetrace();
+			$message['trace'] = $this->_gettrace($app);
+			$res              = $this->_write_file('FATAL', $message, $app, 'FATAL');
+		} elseif (!empty($msg)) {
+			$message['error'] = $msg;
+			$message['trace'] = $this->_gettrace($app);
+			$res              = $this->_write_file('FATAL', $message, $app, 'FATAL');
 		}
+		var_dump($message['trace']);
 	}
 	/**
 	 * 写notice日志
@@ -198,6 +202,7 @@ class LIB_Log {
 		$message = array_merge($message, $data);
 
 		$message['module'] = $app;
+		$message['trace']  = $this->_gettrace();
 
 		$res = $this->_write_file('WARNING', $message, $app);
 	}
@@ -208,29 +213,25 @@ class LIB_Log {
 	 * @date   2015-07-02
 	 */
 
-	public function writetrace($app) {
+	private function _gettrace($app = '') {
 		$app    = !empty($app) ? $app : (defined('APP') ? APP : 'sys');
 		$result = $this->_elements($this->_log_base, $this->initnotice());
 		$trace  = debug_backtrace();
 		$need   = array(
+			'object_name',
 			'type',
 			'class',
 			'function',
 			'file',
 			'line',
 		);
+		$return_trace = array();
 		foreach ($trace as $key => $value) {
-			if (isset($value['object'])) {
-				$message['object_name'] = get_class($value['object']);
-				unset($value['object']);
-			}
-			$message = $this->_elements($need, $value);
-			$message = array_merge($result, $message);
-
-			$message['module'] = $app;
-
-			$res = $this->_write_file('TRACE', $message, $app);
+			$value['object_name'] = isset($value['object']) ? get_class($value['object']) : '';
+			$message              = $this->_elements($need, $value);
+			$return_trace[]       = $message;
 		}
+		return $return_trace;
 	}
 	/**
 	 * 生成logid
@@ -249,8 +250,13 @@ class LIB_Log {
 		} elseif (isset($_REQUEST['logid']) && intval($_REQUEST['logid']) !== 0) {
 			$logid = intval($_REQUEST['logid']);
 		} else {
-			$arr   = gettimeofday();
-			$logid = ((($arr['sec'] * 100000 + $arr['usec'] / 10) & 0x7FFFFFFF) | 0x80000000);
+			$arr = gettimeofday();
+			mt_srand(ip2long(self::_gethostip()));
+			$logid = sprintf('%04d', mt_rand(0, 999));
+			$logid .= sprintf('%03d', rand(0, 999));
+			$logid .= sprintf('%04d', $arr['usec'] % 10000);
+			$logid .= sprintf('%04d', $arr['sec'] % 3600);
+			//$logid = ((($arr['sec'] * 100000 + $arr['usec'] % 1000) & 0x7FFFFFFF) | 0x80000000);
 		}
 		return $logid;
 	}
@@ -267,7 +273,7 @@ class LIB_Log {
 	public function write_log($level, $msg) {
 		$level = strtoupper($level);
 		if ('ERROR' === $level) {
-			$this->writefatal();
+			$this->writefatal($msg);
 			return intval(TRUE);
 		}
 		$message = array(
@@ -301,8 +307,8 @@ class LIB_Log {
 		$this->_noticelog['cookie']    = isset($_COOKIE) ? $_COOKIE : '';
 		$this->_noticelog['method']    = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
 		$this->_noticelog['uri']       = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-		$this->_noticelog['caller_ip'] = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
-		$this->_noticelog['host_ip']   = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
+		$this->_noticelog['caller_ip'] = self::_getclientip();
+		$this->_noticelog['host_ip']   = self::_gethostip();
 
 		$notice_init = $this->_noticelog;
 		return $notice_init;
@@ -337,14 +343,15 @@ class LIB_Log {
 	 * @date   2015-07-03
 	 */
 
-	private function _write_file($level, $msg, $app = 'sys') {
+	private function _write_file($level, $msg, $app = 'sys', $type = '') {
 		$level = strtoupper($level);
 		if (!$this->_enabled ||
 			!isset($this->_levels[$level]) ||
 			$this->_config['level'] < $this->_levels[$level]) {
 			return FALSE;
 		}
-		$msg = array_merge(array('level' => $level), $msg);
+		$msg   = array_merge(array('level' => $level), $msg);
+		$level = empty($type) ? $level : $type;
 		file_exists($this->_log_path . $app) or mkdir($this->_log_path . $app, 0755, true);
 		$suffix  = isset($this->_config['suffix'][$level]) ? $this->_config['suffix'][$level] : '.log';
 		$app_path = $this->_log_path . $app . '/' . $app . '.' . date('Y-m-d') . $suffix;
@@ -432,6 +439,14 @@ class LIB_Log {
 
 		fclose($fp);
 		return true;
+	}
+
+	private static function _getclientip() {
+		return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+	}
+
+	private static function _gethostip() {
+		return isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
 	}
 
 }
