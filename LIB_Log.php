@@ -336,7 +336,7 @@ class LIB_Log {
 	 * @param  [string] $level [日志的等级]
 	 * @param  [array] $msg [日志内容]
 	 * @param  string $app [日志的子路径]
-	 * @param  string $subffix [日志文件后缀]
+	 * @param  string $suffix [日志文件后缀]
 	 * @return [type] [FALSE:写日志失败；TRUE:写日志成功]
 	 * @author wangyunji
 	 * @date   2015-07-03
@@ -352,9 +352,9 @@ class LIB_Log {
 		$msg   = array_merge(array('level' => $level), $msg);
 		$level = empty($type) ? $level : $type;
 		file_exists($this->_log_path . $app) or mkdir($this->_log_path . $app, 0755, true);
-		$subffix  = isset($this->_config['subffix'][$level]) ? $this->_config['subffix'][$level] : '.log';
-		$app_path = $this->_log_path . $app . '/' . $app . '.' . date('Y-m-d') . $subffix;
-		$filepath = !isset($this->_config['path'][$level]) ? $app_path : $this->_log_path . $this->_config['path'][$level] . '.' . date('Y-m-d') . $subffix;
+		$suffix  = isset($this->_config['suffix'][$level]) ? $this->_config['suffix'][$level] : '.log';
+		$app_path = $this->_log_path . $app . '/' . $app . '.' . date('Y-m-d') . $suffix;
+		$filepath = !isset($this->_config['path'][$level]) ? $app_path : $this->_log_path . $this->_config['path'][$level] . '.' . date('Y-m-d') . $suffix;
 
 		if (TRUE === $this->debug) {
 			echo '======path========' . "\n";

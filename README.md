@@ -24,7 +24,7 @@ SYS日志：对CI框架起作用，如果使用的是CI框架，用这个日志�
 # 调用demo
 记录NOTICE日志：
 ```
-$app = 'login';//模块名称,控制日志的子目录 同时这个参数还支持`defind('APP','login');`方式来支持
+$app = 'login';//模块名称,控制日志的子目录 同时这个参数还支持`define('APP','login');`方式来支持
 $logSrv = new LIB_Log();//日志类初始化
 $logSrv->addlog('key', 'value');//添加NOTICE日志
 $logSrv->write($app);
@@ -51,7 +51,7 @@ $config = array(
 		'RPC'   => 'rpc/rpc.log.',
 		'SYS'   => 'cisys/sys.log.',
 	),
-	'subffix'  => array(
+	'suffix'  => array(
 		'WARNING' => '.wf',
 	),
 );
@@ -71,7 +71,7 @@ protected $_levels = array('FATAL' => 1, 'NOTICE' => 3, 'RPC' => 3, 'WARNING' =>
 
 `path`:根据这个配置，可以强制将不同等级的日志记录到不同的目录中。
 
-`subffix`:根据这个配置，可以强制将不同等级的日志记录到带有后缀的文件中。
+`suffix`:根据这个配置，可以强制将不同等级的日志记录到带有后缀的文件中。
 
 # 测试结果
 当level配置为`4`时：

@@ -9,7 +9,7 @@ $config = array(
 		'RPC'   => 'rpc/rpc',
 		'SYS'   => 'sys/sys',
 	),
-	'subffix'  => array(
+	'suffix'  => array(
 		'WARNING' => '.wf',
 	),
 );
