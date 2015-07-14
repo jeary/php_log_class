@@ -142,6 +142,7 @@ class LIB_LogTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('INFO', $contents[$lastRow]->syslevel);
 		$this->assertEquals('uc', $contents[$lastRow]->product);
 		$this->assertEquals($this->_logid, $contents[$lastRow]->logid);
+		$this->assertEquals(15, strlen($contents[$lastRow]->logid));
 		$this->assertTrue(isset($contents[$lastRow]->timestamp));
 		$this->assertTrue(isset($contents[$lastRow]->date));
 
@@ -152,6 +153,26 @@ class LIB_LogTest extends PHPUnit_Framework_TestCase {
 		// Test the number of logs per second (LPS) that the framework can handle. What is the fastest it can do?
 
 		// 1. Single process
+		$this->_logSrv->addlog('key', 'Test5678901234567890123456789012345678900000');
+		$start_time = microtime(TRUE);
+		$num        = 100000;
+		for ($i = 0; $i < $num; $i++) {
+			$this->_logSrv->write();
+		}
+		$end_time = microtime(TRUE);
+		// Open the file, and verify the format is correct.
+		$expectedFilePath = 'output/sys/sys.' . date('Y-m-d') . '.log';
+		$this->assertTrue(file_exists($expectedFilePath));
+
+		$contents = $this->_get_log_json_array($expectedFilePath);
+
+		$this->assertNotNull($contents);
+
+		// Test the row just inserted.
+		$lastRow = sizeof($contents) - 1;
+		echo "\n time:" . strval($end_time - $start_time) . "\n";
+		echo "\n 日志大小：" . strlen(json_encode($contents[$lastRow])) . "\n";
+		echo "\n 日志性能：" . $num / intval($end_time - $start_time) . "\n";
 		// 2. Multiple processes
 		// 3. Multiple threads (if applicable), plus thread safety.
 	}
