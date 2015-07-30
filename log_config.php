@@ -8,8 +8,10 @@ $config = array(
 		'FATAL' => 'php/php',
 		'RPC'   => 'rpc/rpc',
 		'SYS'   => 'sys/sys',
+		'DEBUG' => 'sys/sys',
+		'INFO'  => 'sys/sys',
 	),
-	'suffix'  => array(
+	'subffix'  => array(
 		'WARNING' => '.wf',
 	),
 );
