@@ -39,7 +39,7 @@ class LIB_Log {
 	 * 日志等级
 	 * @var array
 	 */
-	protected $_levels = array('FATAL' => 1, 'NOTICE' => 3, 'RPC' => 3, 'WARNING' => 4, 'TRACE' => 5, 'SYS' => 6, 'ALL' => 7);
+	protected $_levels = array('FATAL' => 1, 'NOTICE' => 3, 'RPC' => 3, 'WARNING' => 4, 'DEBUG' => 5, 'SYS' => 6, 'ALL' => 7);
 	/**
 	 * Format of timestamp for log files
 	 *
