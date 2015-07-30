@@ -39,7 +39,7 @@ class LIB_Log {
 	 * 日志等级
 	 * @var array
 	 */
-	protected $_levels = array('FATAL' => 1, 'NOTICE' => 3, 'RPC' => 3, 'WARNING' => 4, 'DEBUG' => 5, 'SYS' => 6, 'ALL' => 7);
+	protected $_levels = array('FATAL' => 1, 'NOTICE' => 2, 'RPC' => 3, 'WARNING' => 4, 'DEBUG' => 5, 'INFO' => 6, 'SYS' => 7);
 	/**
 	 * Format of timestamp for log files
 	 *
@@ -279,14 +279,20 @@ class LIB_Log {
 			$this->writefatal($msg);
 			return intval(TRUE);
 		}
-		$message = array(
-			'syslevel' => $level,
-			'sysmsg'   => $msg,
-		);
-		$result  = $this->_elements($this->_log_base, $this->initnotice());
-		$message = array_merge($result, $message);
-		$res     = $this->_write_file('SYS', $message);
-		return intval($res);
+		$result = $this->_elements($this->_log_base, $this->initnotice());
+		if (!in_array($level, $this->_levels)) {
+			$message = array(
+				'syslevel' => $level,
+				'sysmsg'   => $msg,
+			);
+			$message = array_merge($result, $message);
+			$res     = $this->_write_file('SYS', $message);
+			return intval($res);
+		} else {
+			$result['msg'] = $msg;
+			$res           = $this->_write_file($level, $result);
+			return intval($res);
+		}
 	}
 	/**
 	 * 初始化日志通用信息
