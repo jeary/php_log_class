@@ -68,6 +68,10 @@ class LIB_Log {
 			include $path;
 		} elseif (defined('APPPATH') && file_exists($path = APPPATH . 'config/log.php')) {
 			include $path;
+		} elseif (defined('FCPATH') && defined('ENVIRONMENT') && file_exists($path = FCPATH . '../shared/config/' . ENVIRONMENT . '/log.php')) {
+			include $path;
+		} elseif (defined('FCPATH') && file_exists($path = FCPATH . '../shared/config/log.php')) {
+			include $path;
 		} elseif (file_exists($path = 'log_config.php')) {
 			include $path;
 		} else {
