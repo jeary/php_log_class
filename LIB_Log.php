@@ -248,8 +248,8 @@ class LIB_Log {
 			return $logid;
 		}
 
-		if (!empty($_SERVER['HTTP_X_BD_LOGID']) && intval(trim($_SERVER['HTTP_X_BD_LOGID'])) !== 0) {
-			$logid = trim($_SERVER['HTTP_X_BD_LOGID']);
+		if (!empty($_SERVER['HTTP_X_YMT_LOGID']) && intval(trim($_SERVER['HTTP_X_YMT_LOGID'])) !== 0) {
+			$logid = trim($_SERVER['HTTP_X_YMT_LOGID']);
 		} elseif (isset($_REQUEST['logid']) && intval($_REQUEST['logid']) !== 0) {
 			$logid = intval($_REQUEST['logid']);
 		} else {
