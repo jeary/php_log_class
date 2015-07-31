@@ -359,13 +359,14 @@ class LIB_Log {
 			$this->_config['level'] < $this->_levels[$level]) {
 			return FALSE;
 		}
-		$msg   = array_merge(array('level' => $level), $msg);
-		$level = empty($type) ? $level : $type;
-		file_exists($this->_log_path . $app) or mkdir($this->_log_path . $app, 0755, true);
+		$msg      = array_merge(array('level' => $level), $msg);
+		$level    = empty($type) ? $level : $type;
 		$subffix  = isset($this->_config['subffix'][$level]) ? $this->_config['subffix'][$level] : '.log';
 		$app_path = $this->_log_path . $app . '/' . $app . '.' . date('Y-m-d') . $subffix;
 		$filepath = !isset($this->_config['path'][$level]) ? $app_path : $this->_log_path . $this->_config['path'][$level] . '.' . date('Y-m-d') . $subffix;
-
+		if (preg_match('/^([\w\_\/\.]+)\/([^\/]+)$/', $filepath, $res)) {
+			file_exists($res[1]) or mkdir($res[1], 0755, true);
+		}
 		if (TRUE === $this->debug) {
 			echo '======path========' . "\n";
 			echo $filepath . "\n";
