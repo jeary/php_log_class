@@ -251,7 +251,7 @@ class LIB_Log {
 		if (!empty($_SERVER['HTTP_X_YMT_LOGID']) && intval(trim($_SERVER['HTTP_X_YMT_LOGID'])) !== 0) {
 			$logid = trim($_SERVER['HTTP_X_YMT_LOGID']);
 		} elseif (isset($_REQUEST['logid']) && intval($_REQUEST['logid']) !== 0) {
-			$logid = intval($_REQUEST['logid']);
+			$logid = trim($_REQUEST['logid']);
 		} else {
 			$arr = gettimeofday();
 			mt_srand(ip2long(self::_gethostip()));
