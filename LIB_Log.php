@@ -398,6 +398,9 @@ class LIB_Log {
 		foreach ($path_arr as $key => $value) {
 			$_newpath = $father . '/' . $value;
 			if (!file_exists($_newpath)) {
+				if (!$this->_is_really_writable($father)) {
+					return FALSE;
+				}
 				mkdir($_newpath, 0755, true);
 			}
 		}
