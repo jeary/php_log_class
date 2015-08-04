@@ -83,9 +83,12 @@ class LIB_Log {
 		defined('BASEPATH') or register_shutdown_function(array($this, 'writefatal'));
 
 		$this->_log_path = ($config['log_path'] !== '') ? $config['log_path'] : APPPATH . 'logs/';
-		if (!is_dir($this->_log_path) or !$this->_is_really_writable($this->_log_path)) {
+		if (!is_dir($this->_log_path)) {
 			$path           = realpath($this->_log_path);
 			$this->_enabled = $this->_newpath('/', $path);
+		}
+		if (!$this->_is_really_writable($this->_log_path)) {
+			$this->_enabled = FALSE;
 		}
 		$this->_mark('srvStart');
 	}
