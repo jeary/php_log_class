@@ -3,13 +3,13 @@
 $config = array(
     'log_path' => 'output/',
     'product'  => 'uc',
-    'level'    => 3,
+    'level'    => 7,
     'path'     => array(
         'FATAL' => 'php/php',
         'RPC'   => 'rpc/rpc',
         'SYS'   => 'sys/sys',
     ),
-    'suffix'  => array(
+    'subffix'  => array(
         'WARNING' => '.wf',
     ),
 );
