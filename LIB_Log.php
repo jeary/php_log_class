@@ -364,8 +364,11 @@ class LIB_Log {
 		$subffix  = isset($this->_config['subffix'][$level]) ? $this->_config['subffix'][$level] : '.log';
 		$app_path = $this->_log_path . $app . '/' . $app . '.' . date('Y-m-d') . $subffix;
 		$filepath = !isset($this->_config['path'][$level]) ? $app_path : $this->_log_path . $this->_config['path'][$level] . '.' . date('Y-m-d') . $subffix;
-		if (preg_match('/^([\w\_\/\.]+)\/([^\/]+)$/', $filepath, $res)) {
-			file_exists($res[1]) or mkdir($res[1], 0755, true);
+		if (!file_exists($filepath)) {
+			$path = !isset($this->_config['path'][$level]) ? $app . '/' . $app : $this->_config['path'][$level];
+			if (preg_match('/^([\w\_\/\.]+)\/([^\/]+)$/', $path, $res)) {
+				$this->_newpath($this->_log_path, $res[0]);
+			}
 		}
 		if (TRUE === $this->debug) {
 			echo '======path========' . "\n";
@@ -374,6 +377,28 @@ class LIB_Log {
 			echo json_encode($msg) . "\n";
 		} else {
 			file_put_contents($filepath, json_encode($msg) . "\n", FILE_APPEND);
+		}
+		return TRUE;
+	}
+	/**
+	 * 子路径不存在，创建路径
+	 * @param  [type] $father [父目录，根目录]
+	 * @param  [type] $child [子目录]
+	 * @return [type] [TRUE:成功]
+	 * @author wangyunji
+	 * @date   2015-08-04
+	 */
+
+	private function _newpath($father, $child) {
+		if (FALSE === $this->_enabled) {
+			return FALSE;
+		}
+		$path_arr = explode('/', $child);
+		foreach ($path_arr as $key => $value) {
+			$_newpath = $father . '/' . $value;
+			if (!file_exists($_newpath)) {
+				mkdir($_newpath, 0755, true);
+			}
 		}
 		return TRUE;
 	}
