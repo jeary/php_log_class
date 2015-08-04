@@ -84,7 +84,8 @@ class LIB_Log {
 
 		$this->_log_path = ($config['log_path'] !== '') ? $config['log_path'] : APPPATH . 'logs/';
 		if (!is_dir($this->_log_path) or !$this->_is_really_writable($this->_log_path)) {
-			$this->_enabled = FALSE;
+			$path           = realpath($this->_log_path);
+			$this->_enabled = $this->_newpath('/', $path);
 		}
 		$this->_mark('srvStart');
 	}
