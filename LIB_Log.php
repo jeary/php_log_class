@@ -308,6 +308,7 @@ class LIB_Log {
 	public function initnotice() {
 		static $notice_init;
 		if (!empty($notice_init)) {
+			$this->_noticelog = $notice_init;
 			return $notice_init;
 		}
 		$this->_noticelog['level']     = 'NOTICE';
