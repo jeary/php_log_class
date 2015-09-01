@@ -284,7 +284,7 @@ class LIB_Log {
 			return intval(TRUE);
 		}
 		$result = $this->_elements($this->_log_base, $this->initnotice());
-		if (!in_array($level, $this->_levels)) {
+		if (!array_key_exists($level, $this->_levels)) {
 			$message = array(
 				'syslevel' => $level,
 				'sysmsg'   => $msg,
