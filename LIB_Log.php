@@ -64,18 +64,38 @@ class LIB_Log {
 	 * @date   2015-05-13
 	 */
 	public function __construct($init = TRUE) {
-		if (defined('APPPATH') && defined('ENVIRONMENT') && file_exists($path = APPPATH . 'config/' . ENVIRONMENT . '/log.php')) {
-			include $path;
-		} elseif (defined('APPPATH') && file_exists($path = APPPATH . 'config/log.php')) {
-			include $path;
-		} elseif (defined('FCPATH') && defined('ENVIRONMENT') && file_exists($path = FCPATH . '../shared/config/' . ENVIRONMENT . '/log.php')) {
-			include $path;
-		} elseif (defined('FCPATH') && file_exists($path = FCPATH . '../shared/config/log.php')) {
-			include $path;
-		} elseif (file_exists($path = 'log_config.php')) {
-			include $path;
+		$this->setconfig();
+		$this->_mark('srvStart');
+	}
+	/**
+	 * 设置配置
+	 * @param  [array] $path_arr [配置路径信息]
+	 * @return [array] [日志配置]
+	 * @author wangyunji
+	 * @date   2015-09-01
+	 */
+
+	public function setconfig($path_arr = array()) {
+		$config = array();
+		if (empty($path_arr) || !is_array($path_arr)) {
+			if (defined('APPPATH') && defined('ENVIRONMENT') && file_exists($path = APPPATH . 'config/' . ENVIRONMENT . '/log_sdk.php')) {
+				include $path;
+			} elseif (defined('APPPATH') && file_exists($path = APPPATH . 'config/log_sdk.php')) {
+				include $path;
+			} elseif (defined('FCPATH') && defined('ENVIRONMENT') && file_exists($path = FCPATH . '../shared/config/' . ENVIRONMENT . '/log_sdk.php')) {
+				include $path;
+			} elseif (defined('FCPATH') && file_exists($path = FCPATH . '../shared/config/log_sdk.php')) {
+				include $path;
+			} elseif (file_exists($path = 'log_config.php')) {
+				include $path;
+			}
 		} else {
-			$config = array();
+			foreach ($path_arr as $key => $file) {
+				if (file_exists($file)) {
+					include $file;
+					break;
+				}
+			}
 		}
 		$this->_config = $config;
 		!$init or $this->initnotice();
@@ -83,14 +103,9 @@ class LIB_Log {
 		defined('BASEPATH') or register_shutdown_function(array($this, 'writefatal'));
 
 		$this->_log_path = ($config['log_path'] !== '') ? $config['log_path'] : APPPATH . 'logs/';
-		if (!is_dir($this->_log_path)) {
-			$path           = realpath($this->_log_path);
-			$this->_enabled = $this->_newpath('/', $path);
-		}
-		if (!$this->_is_really_writable($this->_log_path)) {
+		if (!is_dir($this->_log_path) or !$this->_is_really_writable($this->_log_path)) {
 			$this->_enabled = FALSE;
 		}
-		$this->_mark('srvStart');
 	}
 	/**
 	 * php普通错误捕获
