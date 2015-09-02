@@ -64,7 +64,21 @@ class LIB_Log {
 	 * @date   2015-05-13
 	 */
 	public function __construct($init = TRUE) {
-		$this->setConfig();
+        $config = array();
+        if (empty($path_arr) || !is_array($path_arr)) {
+            if (defined('APPPATH') && defined('ENVIRONMENT') && file_exists($path = APPPATH . 'config/' . ENVIRONMENT . '/log_sdk.php')) {
+                include $path;
+            } elseif (defined('APPPATH') && file_exists($path = APPPATH . 'config/log_sdk.php')) {
+                include $path;
+            } elseif (defined('FCPATH') && defined('ENVIRONMENT') && file_exists($path = FCPATH . '../shared/config/' . ENVIRONMENT . '/log_sdk.php')) {
+                include $path;
+            } elseif (defined('FCPATH') && file_exists($path = FCPATH . '../shared/config/log_sdk.php')) {
+                include $path;
+            } elseif (file_exists($path = 'log_config.php')) {
+                include $path;
+            }
+        }
+		$this->setConfig($config);
 		$this->_mark('srvStart');
 	}
 	/**
@@ -75,28 +89,7 @@ class LIB_Log {
 	 * @date   2015-09-01
 	 */
 
-	public function setConfig($path_arr = array(), $init = TRUE) {
-		$config = array();
-		if (empty($path_arr) || !is_array($path_arr)) {
-			if (defined('APPPATH') && defined('ENVIRONMENT') && file_exists($path = APPPATH . 'config/' . ENVIRONMENT . '/log_sdk.php')) {
-				include $path;
-			} elseif (defined('APPPATH') && file_exists($path = APPPATH . 'config/log_sdk.php')) {
-				include $path;
-			} elseif (defined('FCPATH') && defined('ENVIRONMENT') && file_exists($path = FCPATH . '../shared/config/' . ENVIRONMENT . '/log_sdk.php')) {
-				include $path;
-			} elseif (defined('FCPATH') && file_exists($path = FCPATH . '../shared/config/log_sdk.php')) {
-				include $path;
-			} elseif (file_exists($path = 'log_config.php')) {
-				include $path;
-			}
-		} else {
-			foreach ($path_arr as $key => $file) {
-				if (file_exists($file)) {
-					include $file;
-					break;
-				}
-			}
-		}
+	public function setConfig($config, $init = TRUE) {
 		$this->_config = $config;
 		!$init or $this->initnotice();
 		set_error_handler(array($this, '_error_handler'));
