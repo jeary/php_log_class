@@ -75,7 +75,7 @@ class LIB_Log {
 	 * @date   2015-09-01
 	 */
 
-	public function setconfig($path_arr = array()) {
+	public function setconfig($path_arr = array(), $init = TRUE) {
 		$config = array();
 		if (empty($path_arr) || !is_array($path_arr)) {
 			if (defined('APPPATH') && defined('ENVIRONMENT') && file_exists($path = APPPATH . 'config/' . ENVIRONMENT . '/log_sdk.php')) {
