@@ -91,14 +91,16 @@ class LIB_Log {
 
 	public function setConfig($config, $init = TRUE) {
 		$this->_config = $config;
-		!$init or $this->initnotice();
-		set_error_handler(array($this, '_error_handler'));
-		defined('BASEPATH') or register_shutdown_function(array($this, 'writefatal'));
+        if ($init) {
+            $this->initnotice();
+            set_error_handler(array($this, '_error_handler'));
+            defined('BASEPATH') or register_shutdown_function(array($this, 'writefatal'));
 
-		$this->_log_path = ($config['log_path'] !== '') ? $config['log_path'] : APPPATH . 'logs/';
-		if (!is_dir($this->_log_path) or !$this->_is_really_writable($this->_log_path)) {
-			$this->_enabled = FALSE;
-		}
+            $this->_log_path = ($config['log_path'] !== '') ? $config['log_path'] : APPPATH . 'logs/';
+            if (!is_dir($this->_log_path) or !$this->_is_really_writable($this->_log_path)) {
+                $this->_enabled = FALSE;
+            }
+        }
 	}
 	/**
 	 * php普通错误捕获
