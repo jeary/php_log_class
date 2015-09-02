@@ -78,7 +78,7 @@ class LIB_Log {
                 include $path;
             }
         }
-		$this->setConfig($config);
+		$this->setConfig($config, $init);
 		$this->_mark('srvStart');
 	}
 	/**
