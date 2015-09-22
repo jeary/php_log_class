@@ -272,13 +272,12 @@ class LIB_Log {
 		} elseif (isset($_REQUEST['logid']) && intval($_REQUEST['logid']) !== 0) {
 			$logid = trim($_REQUEST['logid']);
 		} else {
-			$arr = gettimeofday();
-			mt_srand(ip2long(self::_gethostip()));
-			$logid = sprintf('%04d', mt_rand(0, 999));
-			$logid .= sprintf('%03d', rand(0, 999));
-			$logid .= sprintf('%04d', $arr['usec'] % 10000);
-			$logid .= sprintf('%04d', $arr['sec'] % 3600);
-			//$logid = ((($arr['sec'] * 100000 + $arr['usec'] % 1000) & 0x7FFFFFFF) | 0x80000000);
+            $timestamp = explode(' ', microtime());
+            $pack_0 = sprintf('%04d', $timestamp[1] % 3600);
+            $pack_1 = sprintf('%04d', intval(($timestamp[0] * 1000000) % 1000));
+            $pack_2 = sprintf('%03d', mt_rand(0, 987654321) % 1000);
+            $pack_3 = sprintf('%04d', crc32(self::_gethostip() * (mt_rand(0, 987654321) % 1000)) % 10000);
+            $logid = ($pack_0 . $pack_1 . $pack_2 . $pack_3);
 		}
 		return $logid;
 	}
