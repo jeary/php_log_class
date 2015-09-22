@@ -64,7 +64,21 @@ class LIB_Log {
 	 * @date   2015-05-13
 	 */
 	public function __construct($init = TRUE) {
-		$this->setconfig();
+        $config = array();
+        if (empty($path_arr) || !is_array($path_arr)) {
+            if (defined('APPPATH') && defined('ENVIRONMENT') && file_exists($path = APPPATH . 'config/' . ENVIRONMENT . '/log_sdk.php')) {
+                include $path;
+            } elseif (defined('APPPATH') && file_exists($path = APPPATH . 'config/log_sdk.php')) {
+                include $path;
+            } elseif (defined('FCPATH') && defined('ENVIRONMENT') && file_exists($path = FCPATH . '../shared/config/' . ENVIRONMENT . '/log_sdk.php')) {
+                include $path;
+            } elseif (defined('FCPATH') && file_exists($path = FCPATH . '../shared/config/log_sdk.php')) {
+                include $path;
+            } elseif (file_exists($path = 'log_config.php')) {
+                include $path;
+            }
+        }
+		$this->setConfig($config, $init);
 		$this->_mark('srvStart');
 	}
 	/**
@@ -75,37 +89,18 @@ class LIB_Log {
 	 * @date   2015-09-01
 	 */
 
-	public function setconfig($path_arr = array()) {
-		$config = array();
-		if (empty($path_arr) || !is_array($path_arr)) {
-			if (defined('APPPATH') && defined('ENVIRONMENT') && file_exists($path = APPPATH . 'config/' . ENVIRONMENT . '/log_sdk.php')) {
-				include $path;
-			} elseif (defined('APPPATH') && file_exists($path = APPPATH . 'config/log_sdk.php')) {
-				include $path;
-			} elseif (defined('FCPATH') && defined('ENVIRONMENT') && file_exists($path = FCPATH . '../shared/config/' . ENVIRONMENT . '/log_sdk.php')) {
-				include $path;
-			} elseif (defined('FCPATH') && file_exists($path = FCPATH . '../shared/config/log_sdk.php')) {
-				include $path;
-			} elseif (file_exists($path = 'log_config.php')) {
-				include $path;
-			}
-		} else {
-			foreach ($path_arr as $key => $file) {
-				if (file_exists($file)) {
-					include $file;
-					break;
-				}
-			}
-		}
+	public function setConfig($config, $init = TRUE) {
 		$this->_config = $config;
-		!$init or $this->initnotice();
-		set_error_handler(array($this, '_error_handler'));
-		defined('BASEPATH') or register_shutdown_function(array($this, 'writefatal'));
+        if ($init) {
+            $this->initnotice();
+            set_error_handler(array($this, '_error_handler'));
+            defined('BASEPATH') or register_shutdown_function(array($this, 'writefatal'));
 
-		$this->_log_path = ($config['log_path'] !== '') ? $config['log_path'] : APPPATH . 'logs/';
-		if (!is_dir($this->_log_path) or !$this->_is_really_writable($this->_log_path)) {
-			$this->_enabled = FALSE;
-		}
+            $this->_log_path = ($config['log_path'] !== '') ? $config['log_path'] : APPPATH . 'logs/';
+            if (!is_dir($this->_log_path) or !$this->_is_really_writable($this->_log_path)) {
+                $this->_enabled = FALSE;
+            }
+        }
 	}
 	/**
 	 * php普通错误捕获
@@ -273,7 +268,6 @@ class LIB_Log {
 			$logid = trim($_REQUEST['logid']);
 		} else {
 			$arr = gettimeofday();
-			mt_srand(ip2long(self::_gethostip()));
 			$logid = sprintf('%04d', mt_rand(0, 999));
 			$logid .= sprintf('%03d', rand(0, 999));
 			$logid .= sprintf('%04d', $arr['usec'] % 10000);
