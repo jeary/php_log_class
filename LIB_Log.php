@@ -268,7 +268,6 @@ class LIB_Log {
 			$logid = trim($_REQUEST['logid']);
 		} else {
 			$arr = gettimeofday();
-			mt_srand(ip2long(self::_gethostip()));
 			$logid = sprintf('%04d', mt_rand(0, 999));
 			$logid .= sprintf('%03d', rand(0, 999));
 			$logid .= sprintf('%04d', $arr['usec'] % 10000);
